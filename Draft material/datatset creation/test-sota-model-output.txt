@@ -1,0 +1,131 @@
+============================================================
+Configuration:
+{
+  "dataset_path": "/kaggle/input/sisr-benchmark-unified",
+  "sota_models_path": "/kaggle/input/testing-models-sisr-cusotm-data/SOTA models",
+  "batch_size": 16,
+  "num_workers": 2,
+  "sample_size": null,
+  "device": "cuda",
+  "save_all_comparisons": false,
+  "save_worst_comparisons": true,
+  "num_worst_to_save": 10
+}
+============================================================
+✓ Added paths for DSCF-SR
+✓ Added paths for seemoredetails
+✓ Added paths for Real-ESRGAN
+Using device: cuda
+GPU: Tesla P100-PCIE-16GB
+⚠ torch.compile is disabled (GPU Capability 6.0 < 7.0).
+✓ Initialized GPU-accelerated metrics (torchmetrics)
+Setting up [LPIPS] perceptual loss: trunk [alex], v[0.1], spatial [off]
+Downloading: "https://download.pytorch.org/models/alexnet-owt-7be5be79.pth" to /root/.cache/torch/hub/checkpoints/alexnet-owt-7be5be79.pth
+100%|██████████| 233M/233M [00:01<00:00, 229MB/s]
+Loading model from: /usr/local/lib/python3.11/dist-packages/lpips/weights/v0.1/alex.pth
+✓ LPIPS loaded successfully
+
+📂 Loading merged dataset metadata...
+🔍 Validating merged dataset structure at: /kaggle/input/sisr-benchmark-unified
+✓ Loaded 1140 test pairs
+
+🔧 Initializing SOTA models...
+✓ DSCF-SR model loaded successfully
+✓ SeemoRe_B_X4 model loaded successfully
+⚠ Error loading SeemoRe_L_X4: PytorchStreamReader failed reading zip archive: failed finding central directory
+✓ SeemoRe_T_X4 model loaded successfully
+✓ RealESRGAN_x4 model loaded successfully
+
+================================================================================
+EVALUATING ALL MODELS
+================================================================================
+
+============================================================
+Evaluating DSCF-SR with batch_size=16
+============================================================
+Evaluating DSCF-SR:  86%|████████▌ | 62/72 [1:17:28<09:28, 56.90s/it]
+❌ Error on item 13 in batch 62: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 523.12 MiB is free. Process 3796 has 15.37 GiB memory in use. Of the allocated memory 14.33 GiB is allocated by PyTorch, and 765.55 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating DSCF-SR: 100%|██████████| 72/72 [1:24:59<00:00, 70.83s/it]
+⏱️ Performance for DSCF-SR: 5099.89s for 1139 images (0.22 img/s)
+
+💾 Saving 10 worst comparison images for DSCF-SR...
+
+📊 DSCF-SR Summary:
+   PSNR: 23.8168 ± 7.0499
+   SSIM: 0.6739 ± 0.1972
+   LPIPS: 0.5555 ± 0.2481
+
+============================================================
+Evaluating SeemoRe_B_X4 with batch_size=16
+============================================================
+Evaluating SeemoRe_B_X4:  12%|█▎        | 9/72 [06:55<50:33, 48.14s/it]
+❌ Error on item 2 in batch 9: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 177.12 MiB is free. Process 3796 has 15.71 GiB memory in use. Of the allocated memory 14.33 GiB is allocated by PyTorch, and 1.09 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating SeemoRe_B_X4:  39%|███▉      | 28/72 [27:51<53:02, 72.34s/it]
+❌ Error on item 6 in batch 28: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 461.12 MiB is free. Process 3796 has 15.43 GiB memory in use. Of the allocated memory 13.77 GiB is allocated by PyTorch, and 1.37 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating SeemoRe_B_X4:  86%|████████▌ | 62/72 [1:10:30<13:53, 83.31s/it]
+❌ Error on item 13 in batch 62: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 349.12 MiB is free. Process 3796 has 15.54 GiB memory in use. Of the allocated memory 13.77 GiB is allocated by PyTorch, and 1.48 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating SeemoRe_B_X4: 100%|██████████| 72/72 [1:21:24<00:00, 67.85s/it]
+⏱️ Performance for SeemoRe_B_X4: 4884.94s for 1137 images (0.23 img/s)
+
+💾 Saving 10 worst comparison images for SeemoRe_B_X4...
+
+📊 SeemoRe_B_X4 Summary:
+   PSNR: 23.8616 ± 7.1086
+   SSIM: 0.6733 ± 0.1983
+   LPIPS: 0.5605 ± 0.2491
+
+============================================================
+Evaluating SeemoRe_T_X4 with batch_size=16
+============================================================
+Evaluating SeemoRe_T_X4:  12%|█▎        | 9/72 [11:29<1:17:04, 73.41s/it]
+❌ Error on item 2 in batch 9: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 279.12 MiB is free. Process 3796 has 15.61 GiB memory in use. Of the allocated memory 14.33 GiB is allocated by PyTorch, and 1008.83 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating SeemoRe_T_X4:  39%|███▉      | 28/72 [32:40<53:54, 73.52s/it]
+❌ Error on item 6 in batch 28: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 559.12 MiB is free. Process 3796 has 15.34 GiB memory in use. Of the allocated memory 14.33 GiB is allocated by PyTorch, and 728.83 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating SeemoRe_T_X4:  86%|████████▌ | 62/72 [1:12:59<12:55, 77.54s/it]
+❌ Error on item 13 in batch 62: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 487.12 MiB is free. Process 3796 has 15.41 GiB memory in use. Of the allocated memory 14.33 GiB is allocated by PyTorch, and 800.83 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating SeemoRe_T_X4: 100%|██████████| 72/72 [1:23:09<00:00, 69.29s/it]
+⏱️ Performance for SeemoRe_T_X4: 4989.11s for 1137 images (0.23 img/s)
+
+💾 Saving 10 worst comparison images for SeemoRe_T_X4...
+
+📊 SeemoRe_T_X4 Summary:
+   PSNR: 23.8518 ± 7.0996
+   SSIM: 0.6727 ± 0.1983
+   LPIPS: 0.5600 ± 0.2488
+
+============================================================
+Evaluating RealESRGAN_x4 with batch_size=16
+============================================================
+Evaluating RealESRGAN_x4:   0%|          | 0/72 [00:00<?, ?it/s]
+❌ Error on item 7 in batch 0: CUDA out of memory. Tried to allocate 538.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 369.12 MiB is free. Process 3796 has 15.52 GiB memory in use. Of the allocated memory 13.36 GiB is allocated by PyTorch, and 1.87 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating RealESRGAN_x4:  12%|█▎        | 9/72 [40:10<4:29:53, 257.05s/it]
+❌ Error on item 2 in batch 9: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 171.12 MiB is free. Process 3796 has 15.71 GiB memory in use. Of the allocated memory 13.77 GiB is allocated by PyTorch, and 1.65 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating RealESRGAN_x4:  39%|███▉      | 28/72 [1:58:47<3:13:07, 263.35s/it]
+❌ Error on item 6 in batch 28: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 41.12 MiB is free. Process 3796 has 15.84 GiB memory in use. Of the allocated memory 13.77 GiB is allocated by PyTorch, and 1.78 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating RealESRGAN_x4:  86%|████████▌ | 62/72 [4:10:58<38:15, 229.53s/it]
+❌ Error on item 13 in batch 62: CUDA out of memory. Tried to allocate 576.00 MiB. GPU 0 has a total capacity of 15.89 GiB of which 327.12 MiB is free. Process 3796 has 15.56 GiB memory in use. Of the allocated memory 13.77 GiB is allocated by PyTorch, and 1.50 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Evaluating RealESRGAN_x4: 100%|██████████| 72/72 [4:43:58<00:00, 236.65s/it]
+⏱️ Performance for RealESRGAN_x4: 17038.55s for 1136 images (0.07 img/s)
+
+💾 Saving 10 worst comparison images for RealESRGAN_x4...
+
+📊 RealESRGAN_x4 Summary:
+   PSNR: 22.6512 ± 5.7490
+   SSIM: 0.6862 ± 0.1937
+   LPIPS: 0.4439 ± 0.2015
+
+================================================================================
+MODEL COMPARISON REPORT
+================================================================================
+Model                PSNR                 SSIM                 LPIPS               
+--------------------------------------------------------------------------------
+DSCF-SR              23.8168              0.6739               0.5555              
+RealESRGAN_x4        22.6512              0.6862               0.4439              
+SeemoRe_B_X4         23.8616              0.6733               0.5605              
+SeemoRe_T_X4         23.8518              0.6727               0.5600              
+
+📄 Detailed comparison saved to: results/model_comparison.json
+
+================================================================================
+🎉 EVALUATION COMPLETE!
+================================================================================
