@@ -1,0 +1,86 @@
+% =================================================================================================
+% 4. DATASET CONSTRUCTION
+% =================================================================================================
+\section{\dataset: Dataset Construction}
+\label{sec:dataset}
+
+\subsection{Source Image Collection}
+\label{sec:dataset_collection}
+
+We curate 2{,}000 high-quality HR images from Pexels\footnote{\url{https://www.pexels.com}} (CC0 license), organized into four semantically distinct categories:
+\textbf{Urban Architecture} (${\sim}$500): buildings and cityscapes with geometric patterns and fine structural details;
+\textbf{Natural Landscapes} (${\sim}$500): outdoor scenes with organic textures and complex foliage;
+\textbf{Portraits} (${\sim}$500): human subjects with smooth skin gradients and fine hair details;
+\textbf{Macro Objects} (${\sim}$500): close-up photography with fine-grained textures.
+All sources satisfy a minimum resolution of $1024 \times 1024$ pixels.
+
+\subsection{Generation Process}
+\label{sec:dataset_generation}
+
+\Cref{alg:dataset_generation} outlines the procedure.
+For each HR image, we apply the \pipeline pipeline (\cref{sec:pipeline}) in random difficulty mode ($p \sim \mathcal{U}(0.4, 0.8)$, $N_{\max} \sim \mathcal{U}(2, 6)$), then downsample by $s{=}4$.
+Complete degradation metadata $\mathbf{m}_i$ is recorded for every pair---the exact sequence of applied degradations, their parameters, and difficulty configuration---enabling stratified evaluation, degradation-conditioned model training, and detailed failure analysis.
+
+\begin{algorithm}[t]
+\caption{Dataset generation procedure}
+\label{alg:dataset_generation}
+\begin{algorithmic}[1]
+\Require Source images $\{I_i^{HR}\}_{i=1}^{N}$, scale factor $s$, pipeline $\mathcal{P}$
+\Ensure Paired dataset $\{(I_i^{LR}, I_i^{HR}, \mathbf{m}_i)\}_{i=1}^{N}$
+\For{$i = 1$ \textbf{to} $N$}
+    \State Sample difficulty: $p \sim \mathcal{U}(0.4, 0.8)$, $N_{\max} \sim \mathcal{U}(2, 6)$
+    \State Initialize metadata: $\mathbf{m}_i \leftarrow \emptyset$
+    \For{each stage $\mathcal{D}_k$ in $\mathcal{P}$}
+        \State Sample application: $u \sim \mathcal{U}(0, 1)$
+        \If{$u < p \cdot w_k$ \textbf{and} $|\mathbf{m}_i| < N_{\max}$}
+            \State $I_i^{\text{deg}}, \theta_k \leftarrow \mathcal{D}_k(I_i^{\text{deg}}; \text{random})$
+            \State $\mathbf{m}_i \leftarrow \mathbf{m}_i \cup \{(k, \theta_k)\}$
+        \EndIf
+    \EndFor
+    \State $I_i^{LR} \leftarrow \text{JPEG}(I_i^{\text{deg}};\, q) \downarrow_{\phi, s}$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Dataset Statistics}
+\label{sec:dataset_stats}
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Dataset statistics of \dataset.}}
+\label{tab:dataset_stats}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Statistic} & \textbf{Urban} & \textbf{Landscape} & \textbf{Portrait} & \textbf{Macro} \\
+\midrule
+Number of pairs & $\sim$500 & $\sim$500 & $\sim$500 & $\sim$500 \\
+Min HR resolution & \multicolumn{4}{c}{$1024 \times 1024$ pixels} \\
+Scale factor & \multicolumn{4}{c}{$\times 4$} \\
+\midrule
+\multicolumn{5}{l}{\textit{Degradation coverage (mean applied per image):}} \\
+Optical degradations & \multicolumn{4}{c}{0.8--1.2 per image} \\
+Motion blur & \multicolumn{4}{c}{0.3--0.5 per image} \\
+Sensor noise & \multicolumn{4}{c}{0.7--0.9 per image} \\
+ISP artifacts & \multicolumn{4}{c}{2.5--4.0 stages per image} \\
+JPEG compression & \multicolumn{4}{c}{0.65--0.75 per image} \\
+\midrule
+Avg. degradations/image & \multicolumn{4}{c}{3.2 $\pm$ 1.4} \\
+Difficulty range & \multicolumn{4}{c}{Easy -- Extreme (continuous)} \\
+Metadata fields/image & \multicolumn{4}{c}{15--40 parameters} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\Cref{tab:dataset_stats} summarizes the key statistics.
+On average, each image undergoes $3.2 \pm 1.4$ distinct degradation operations, with 15--40 parameters recorded per image.
+The stochastic nature of \pipeline ensures broad coverage of the degradation parameter space: JPEG quality factors span 25--85, sensor noise levels range over an order of magnitude, and all five motion blur types are represented.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/fig_dataset_samples.png}
+    \caption{\textbf{Example LR--HR pairs from \dataset.}
+    Left: HR ground truth ($1024 \times 1024$). Right: four LR variants ($256 \times 256$) produced by \pipeline at different difficulty levels, exhibiting realistic combinations of blur, noise, color shifts, and compression artifacts.}
+    \label{fig:dataset_samples}
+\end{figure}

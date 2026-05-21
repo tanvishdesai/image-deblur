@@ -1,0 +1,56 @@
+% Additional packages for the paper
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{colortbl}
+\usepackage{array}
+
+% Figures
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{placeins}
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% Misc
+\usepackage{xspace}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{soul}
+\usepackage{pifont}
+
+% Checkmark and crossmark
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+% Custom commands (etal, ie, eg, cf, wrt already defined by cvpr.sty)
+\providecommand{\etal}{\textit{et al.}\xspace}
+\providecommand{\ie}{\textit{i.e.}\xspace}
+\providecommand{\eg}{\textit{e.g.}\xspace}
+\providecommand{\cf}{\textit{cf.}\xspace}
+\providecommand{\wrt}{w.r.t.\xspace}
+\newcommand{\dataset}{\textsc{RealDeg-Bench}\xspace}
+\newcommand{\pipeline}{\textsc{PhysDeg}\xspace}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% Table highlight colors
+\definecolor{bestcolor}{HTML}{E8F5E9}
+\definecolor{secondcolor}{HTML}{FFF3E0}
+
+% Annotations (disable for submission)
+\newcommand{\red}[1]{{\color{red}#1}}
+\newcommand{\todo}[1]{{\color{red}#1}}
+\newcommand{\TODO}[1]{\textbf{\color{red}[TODO: #1]}}

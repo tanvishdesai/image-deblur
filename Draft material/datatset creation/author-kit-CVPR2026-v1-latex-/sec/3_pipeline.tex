@@ -1,0 +1,112 @@
+% =================================================================================================
+% 3. PROPOSED DEGRADATION PIPELINE
+% =================================================================================================
+\section{Proposed Degradation Pipeline}
+\label{sec:pipeline}
+
+We introduce \pipeline, a physically-grounded degradation pipeline that models the sequential transformation of scene radiance into a stored low-resolution image.
+Unlike existing approaches that apply degradations in a flat or shuffled manner~\cite{zhang2021designing,wang2021real}, our pipeline organizes degradation operations into six physically-ordered stages that mirror the actual image formation process:
+\begin{equation}
+    I_{LR} = \left( \mathcal{D}_{\text{comp}} \circ \mathcal{D}_{\text{isp}} \circ \mathcal{D}_{\text{sensor}} \circ \mathcal{D}_{\text{scene}} \circ \mathcal{D}_{\text{motion}} \circ \mathcal{D}_{\text{optical}} \right)(I_{HR}) \downarrow_{s},
+    \label{eq:full_pipeline}
+\end{equation}
+where each operator $\mathcal{D}_{(\cdot)}$ is parameterized by physically meaningful quantities and applied stochastically according to a difficulty-modulated probability.
+
+\subsection{Stage 1: Optical Degradations}
+\label{sec:pipeline_optical}
+
+Optical degradations originate from imperfections in the lens system.
+We model three effects: \textit{chromatic aberration} via wavelength-dependent channel shifts $\delta_c \sim \mathcal{U}(-2.5, 2.5)$ pixels~\cite{kang2007automatic};
+\textit{radial lens distortion} using the Brown--Conrady model~\cite{brown1971close}:
+\begin{equation}
+    r' = r \left(1 + k_1 r^2 \right), \quad k_1 \sim \mathcal{U}(-0.15, 0.15);
+    \label{eq:radial_distortion}
+\end{equation}
+and \textit{vignetting} via the $\cos^4$ fall-off approximation $V(x,y) = 1 - s \cdot (d(x,y)/d_{\max})^2$ with $s \sim \mathcal{U}(0.1, 0.5)$.
+
+\subsection{Stage 2: Motion Blur}
+\label{sec:pipeline_motion}
+
+Motion blur arises during the exposure interval and is modeled as $I_{\text{blur}} = I \ast k_\theta$.
+We implement five physically-motivated kernel types to capture the diversity of real-world motion:
+(1)~\textit{linear} uniform kernels along direction $\phi$ with length $l \sim \mathcal{U}(5, 20)$~px;
+(2)~\textit{defocus} disk kernels of radius $r \sim \mathcal{U}(2, 10)$~px, approximating circular-aperture bokeh~\cite{potmesil1981lens};
+(3)~\textit{anisotropic Gaussian} kernels with independent scales $\sigma_x, \sigma_y \sim \mathcal{U}(0.5, 4.0)$ and rotation $\phi \sim \mathcal{U}(0, \pi)$;
+(4)~\textit{rotational} blur simulating in-plane camera rotation; and
+(5)~\textit{random walk} trajectories $\mathbf{p}_t = \sum_{\tau=1}^{t} \boldsymbol{\epsilon}_\tau$ with $\boldsymbol{\epsilon}_\tau \sim \mathcal{N}(\mathbf{0}, \sigma_{\text{step}}^2 \mathbf{I}_2)$ simulating camera shake.
+
+\subsection{Stage 3: Scene Illumination Effects}
+\label{sec:pipeline_scene}
+
+We model two scene-level effects.
+\textit{Low-light degradation} applies gamma correction with noise amplification: $I_{\text{low}} = I^\gamma + \mathcal{N}(0, \sigma_0^2 b^2)$ where $\gamma \sim \mathcal{U}(1.5, 3.0)$ and $b \sim \mathcal{U}(1.2, 2.0)$, modeling the increased noise visibility in underexposed imagery~\cite{chen2018learning}.
+\textit{Atmospheric scattering} follows the Koschmieder model~\cite{mccartney1976optics}: $I_{\text{haze}} = t \cdot J + A(1 - t)$, where $A \sim \mathcal{U}(0.8, 0.95)$ is the atmospheric light and $t = \exp(-\beta \cdot d)$ with $\beta \sim \mathcal{U}(0.1, 0.6)$.
+
+\subsection{Stage 4: Sensor Noise}
+\label{sec:pipeline_sensor}
+
+Camera sensor noise is a composite of multiple physical sources~\cite{healey1994radiometric,foi2008practical}.
+We model three components: (1)~signal-dependent \textit{shot noise} (Poisson):
+\begin{equation}
+    I_{\text{shot}}(x, c) = \text{Poisson}\!\left(\frac{I(x, c)}{\alpha_c}\right) \cdot \alpha_c,
+    \label{eq:shot_noise}
+\end{equation}
+where $\alpha_c = \alpha \cdot \lambda_c$ with $\alpha \sim \mathcal{U}(0.01, 0.08)$ and channel factors $[\lambda_R, \lambda_G, \lambda_B] = [1.1, 1.0, 1.05]$;
+(2)~spatially-correlated \textit{read noise} (Gaussian) with $\sigma_r \sim \mathcal{U}(0.005, 0.025)$; and
+(3)~\textit{dark current} offset $d \sim \mathcal{U}(0.001, 0.012)$.
+The composite model is $I_{\text{noisy}} = \text{clip}[\text{Shot}(I) + \text{Read}(I) + d,\, 0,\, 1]$.
+
+\subsection{Stage 5: Image Signal Processing (ISP)}
+\label{sec:pipeline_isp}
+
+Consumer cameras apply an ISP pipeline that introduces its own artifacts.
+We model five sub-stages in their canonical processing order: $\mathcal{D}_{\text{isp}} = \mathcal{S} \circ \mathcal{T} \circ \mathcal{C} \circ \mathcal{F} \circ \mathcal{M}$, where $\mathcal{M}$ denotes demosaicing (cross-channel leakage simulation), $\mathcal{F}$ bilateral denoising~\cite{tomasi1998bilateral}, $\mathcal{C}$ stochastic color correction via a perturbed $3{\times}3$ matrix with saturation adjustment, $\mathcal{T}$ gamma-based tone mapping with highlight compression, and $\mathcal{S}$ unsharp masking.
+
+\subsection{Stage 6: Compression and Downsampling}
+\label{sec:pipeline_compression}
+
+The final stage applies JPEG compression ($q \sim \mathcal{U}(25, 85)$), an optional random intermediate resize ($f \sim \mathcal{U}(0.7, 1.3)$) simulating social media processing, and terminal downsampling by factor $s$ using a randomly selected kernel from $\{\text{bicubic, bilinear, Lanczos}\}$.
+
+\subsection{Difficulty Modulation}
+\label{sec:pipeline_difficulty}
+
+Each degradation is applied independently with a difficulty-modulated probability.
+We define four levels---\textit{easy}, \textit{medium}, \textit{hard}, \textit{extreme}---controlling the base application probability $p$ and maximum concurrent degradations $N_{\max}$:
+$(p, N_{\max}) \in \{(0.3, 2), (0.5, 3), (0.7, 5), (0.9, 7)\}$.
+Stage-specific modifiers further refine rates: optical effects are scaled by $0.7{\times}$ (less common), while ISP and sensor noise are scaled by $1.2{\times}$ and $1.1{\times}$ (highly prevalent).
+\Cref{tab:degradation_params} summarizes all degradation types and their parameters.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Summary of degradation types in \pipeline.} Application probabilities shown for the default random difficulty mode.}
+\label{tab:degradation_params}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}llcc@{}}
+\toprule
+\textbf{Stage} & \textbf{Degradation} & \textbf{Key Parameters} & \textbf{Prob.} \\
+\midrule
+\multirow{3}{*}{\rotatebox{90}{\small Optical}}
+& Chromatic aberr. & $\delta \in [-2.5, 2.5]$ px & $\sim$0.4 \\
+& Lens distortion & $k_1 \in [-0.15, 0.15]$ & $\sim$0.4 \\
+& Vignetting & $s \in [0.1, 0.5]$ & $\sim$0.3 \\
+\midrule
+\rotatebox{90}{\small Motion}
+& Motion blur & 5 kernel types & 0.50 \\
+\midrule
+\multirow{2}{*}{\rotatebox{90}{\small Scene}}
+& Low-light & $\gamma \in [1.5, 3.0]$ & $\sim$0.4 \\
+& Atmospheric & $\beta \in [0.1, 0.6]$ & $\sim$0.3 \\
+\midrule
+\rotatebox{90}{\small Sensor}
+& Composite noise & $\alpha, \sigma_r, d$ & $\sim$0.9 \\
+\midrule
+\rotatebox{90}{\small ISP}
+& 5-stage ISP & See \cref{sec:pipeline_isp} & $\sim$0.8 \\
+\midrule
+\multirow{2}{*}{\rotatebox{90}{\small Comp.}}
+& JPEG compress. & $q \in [25, 85]$ & 0.70 \\
+& Random resize & $f \in [0.7, 1.3]$ & 0.60 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

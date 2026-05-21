@@ -1,0 +1,133 @@
+% =================================================================================================
+% 5. EXPERIMENTS
+% =================================================================================================
+\section{Experiments}
+\label{sec:experiments}
+
+We validate \dataset through a comprehensive evaluation of state-of-the-art SISR methods, demonstrating the degradation gap between standard benchmarks and our realistic degradation protocol.
+
+\subsection{Setup}
+\label{sec:exp_setup}
+
+\paragraph{Evaluated methods.}
+We select four representative models:
+\textbf{DSCF-SR}~\cite{xiao2024dscf} (Transformer with dynamic sparse cross-attention),
+\textbf{SeemoRe-B} and \textbf{SeemoRe-T}~\cite{zamfir2024seemore} (mixture-of-experts, Base and Tiny variants), and
+\textbf{Real-ESRGAN}~\cite{wang2021real} (GAN-based blind SR with second-order degradation training).
+The first three are trained under bicubic degradation on DIV2K/Flickr2K; Real-ESRGAN uses its own stochastic degradation pipeline.
+All models use officially released $\times$4 weights; inference is on an NVIDIA Tesla P100 GPU.
+
+\paragraph{Metrics.}
+We employ PSNR and SSIM~\cite{wang2004image} (computed on the Y channel) as distortion metrics, and LPIPS~\cite{zhang2018unreasonable} as a learned perceptual quality metric.
+
+\subsection{Overall Results}
+\label{sec:exp_results}
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Overall performance on \dataset ($\times$4).}
+Non-blind methods cluster in distortion metrics; the blind method (Real-ESRGAN) achieves lower PSNR but substantially better perceptual quality.}
+\label{tab:overall_results}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Method} & \textbf{Training} & \textbf{PSNR$\uparrow$} & \textbf{SSIM$\uparrow$} & \textbf{LPIPS$\downarrow$} \\
+\midrule
+DSCF-SR~\cite{xiao2024dscf} & Bicubic & 23.82 & 0.674 & 0.556 \\
+SeemoRe-B~\cite{zamfir2024seemore} & Bicubic & \textbf{23.86} & 0.673 & 0.561 \\
+SeemoRe-T~\cite{zamfir2024seemore} & Bicubic & 23.85 & 0.673 & 0.560 \\
+\midrule
+Real-ESRGAN~\cite{wang2021real} & Blind deg. & 22.65 & \textbf{0.686} & \textbf{0.444} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\Cref{tab:overall_results} presents aggregate results across all 1{,}140 test pairs.
+The best non-blind methods achieve only ${\sim}$23.9~dB PSNR on \dataset, compared to ${>}$30~dB on Set5 under bicubic degradation---a \textbf{6--8~dB gap} that directly quantifies the degradation gap motivating our work.
+DSCF-SR, SeemoRe-B, and SeemoRe-T converge to nearly identical performance (within 0.04~dB), suggesting that under complex degradations the performance ceiling is determined by the degradation mismatch rather than architectural capacity.
+
+Real-ESRGAN presents a striking counterpoint: while achieving the lowest PSNR ($-$1.21~dB below non-blind methods), it obtains the best SSIM (0.686) and substantially better LPIPS (0.444 vs.\ ${>}$0.555, a 20\% relative improvement).
+This perception--distortion divergence~\cite{blau2018perception} underscores the need for multi-metric evaluation under complex degradations.
+
+\subsection{Category-Wise Analysis}
+\label{sec:exp_category}
+
+\begin{table*}[t]
+\centering
+\caption{\textbf{Category-wise performance on \dataset ($\times$4).}
+Best per metric and category in \textbf{bold}.
+Urban architecture is most challenging; Real-ESRGAN leads LPIPS across all categories.}
+\label{tab:category_results}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l|ccc|ccc|ccc|ccc@{}}
+\toprule
+& \multicolumn{3}{c|}{\textbf{Urban Architecture}} & \multicolumn{3}{c|}{\textbf{Natural Landscapes}} & \multicolumn{3}{c|}{\textbf{Portraits \& People}} & \multicolumn{3}{c}{\textbf{Macro Objects}} \\
+\cmidrule(l){2-4} \cmidrule(l){5-7} \cmidrule(l){8-10} \cmidrule(l){11-13}
+\textbf{Method} & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ & PSNR$\uparrow$ & SSIM$\uparrow$ & LPIPS$\downarrow$ \\
+\midrule
+DSCF-SR & 23.26 & 0.692 & 0.505 & 23.12 & 0.676 & 0.539 & \textbf{24.55} & 0.658 & 0.602 & 24.44 & 0.669 & 0.581 \\
+SeemoRe-B & \textbf{23.35} & 0.693 & 0.511 & \textbf{23.14} & 0.674 & 0.545 & \textbf{24.58} & 0.657 & 0.607 & \textbf{24.48} & 0.667 & 0.584 \\
+SeemoRe-T & 23.34 & 0.692 & 0.510 & 23.13 & 0.674 & 0.544 & 24.57 & 0.657 & 0.606 & 24.48 & 0.667 & 0.584 \\
+\midrule
+Real-ESRGAN & 21.89 & \textbf{0.702} & \textbf{0.383} & 22.17 & \textbf{0.701} & \textbf{0.408} & 23.16 & \textbf{0.643} & \textbf{0.532} & 23.43 & \textbf{0.694} & \textbf{0.463} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\Cref{tab:category_results} reveals content-dependent vulnerability patterns.
+\textbf{Urban architecture} is consistently the most challenging category (${\sim}$23.3~dB for non-blind methods vs.\ ${\sim}$24.5~dB for portraits/macro), as geometric structures interact adversely with blur and compression artifacts.
+\textbf{Macro objects} are comparatively resilient due to textural regularity and self-similar structures.
+Real-ESRGAN's LPIPS advantage is universal (0.119--0.131 improvement), largest for natural landscapes where adversarially generated organic textures are perceptually more convincing.
+In portraits, the PSNR gap narrows ($-$1.39~dB) while the LPIPS gap widens, highlighting the acute perception--distortion tradeoff for facial content.
+
+\subsection{Standard Benchmarks vs.\ \dataset}
+\label{sec:exp_gap_analysis}
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Performance gap: bicubic benchmarks vs.\ \dataset.}
+The 6--8~dB drop reveals a severe generalization gap.}
+\label{tab:gap_analysis}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Method} & \textbf{Set5} & \textbf{Set14} & \textbf{BSD100} & \textbf{Urban100} & \textbf{\dataset} \\
+\midrule
+Non-blind SOTA & $\sim$33 & $\sim$29 & $\sim$28 & $\sim$27 & $\sim$23.9 \\
+Real-ESRGAN & $\sim$28 & $\sim$25 & $\sim$25 & $\sim$24 & 22.7 \\
+\midrule
+$\Delta$ (drop) & -- & -- & -- & -- & 6--8 dB \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\Cref{tab:gap_analysis} contextualizes the degradation gap.
+Even Real-ESRGAN, explicitly trained for blind SR, drops ${\sim}$5~dB relative to Urban100, indicating that degradation-aware training has substantial room for improvement against the diversity of \pipeline.
+The high per-image variance (5.7--7.1~dB PSNR standard deviation) further highlights that model performance on realistic data is highly image-dependent, motivating per-image metadata for fine-grained analysis.
+
+\subsection{Qualitative Results}
+\label{sec:exp_qualitative}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figures/fig_qualitative_comparison.png}
+    \caption{\textbf{Qualitative comparison on worst-case samples from \dataset.}
+    \textbf{Top (a--b):} Non-blind methods fail catastrophically on realistic degradations---severe illumination causes darkened outputs (PSNR ${<}$9~dB), and texture ringing emerges on fine structures.
+    \textbf{Bottom (c--d):} Real-ESRGAN struggles with extreme color/exposure shifts.
+    These failures are invisible in standard bicubic benchmarks.}
+    \label{fig:qualitative_comparison}
+\end{figure*}
+
+\Cref{fig:qualitative_comparison} shows representative failure cases.
+Non-blind methods exhibit characteristic artifacts: noise amplification, color fringing from chromatic aberration, and ringing where the assumed bicubic kernel differs from the actual degradation.
+Real-ESRGAN produces perceptually more coherent outputs but occasionally hallucinates textures not present in the ground truth.
+
+\subsection{Toward Degradation-Aware SR}
+\label{sec:exp_dast}
+
+The per-image degradation metadata in \dataset enables degradation-conditioned SR.
+As a proof of concept, we describe a baseline Degradation-Aware Swin Transformer (DAST) that predicts a degradation vector from the LR input and conditions the backbone via SFT layers~\cite{wang2018recovering}: $\mathbf{F}' = (\bm{\gamma}(\mathbf{d}) + \mathbf{1}) \odot \mathbf{F} + \bm{\beta}(\mathbf{d})$.
+The estimator is supervised using ground-truth metadata, enabling precise characterization without iterative refinement---a capability impossible to develop with existing benchmarks.

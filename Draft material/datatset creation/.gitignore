@@ -1,0 +1,107 @@
+
+
+# Added by github_sync_projects.py
+node_modules/
+.next/
+dist/
+build/
+out/
+coverage/
+.cache/
+.pytest_cache/
+.mypy_cache/
+__pycache__/
+*.pyc
+venv/
+.venv/
+env/
+site-packages/
+
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+token.json
+credentials/
+*.jks
+
+# Datasets, model weights, and generated heavy artifacts
+dataset/
+datasets/
+data/
+models/
+model/
+checkpoints/
+checkpoint/
+*.pth
+*.pt
+*.onnx
+*.h5
+*.keras
+*.pkl
+*.joblib
+*.npy
+*.npz
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
+
+new results/results/DSCF-SR/worst_samples/worst_07_psnr_10.05.png
+new results/results/DSCF-SR/worst_samples/worst_09_psnr_10.49.png
+new results/results/RealESRGAN_x4/worst_samples/worst_06_psnr_9.82.png
+new results/results/RealESRGAN_x4/worst_samples/worst_10_psnr_10.15.png
+new results/results/SeemoRe_B_X4/worst_samples/worst_06_psnr_10.05.png
+new results/results/SeemoRe_B_X4/worst_samples/worst_09_psnr_10.49.png
+new results/results/SeemoRe_T_X4/worst_samples/worst_06_psnr_10.05.png
+new results/results/SeemoRe_T_X4/worst_samples/worst_09_psnr_10.49.png
+old results of testing sota/results/DSCF-SR/worst_samples/worst_02_psnr_9.02.png
+old results of testing sota/results/DSCF-SR/worst_samples/worst_06_psnr_9.64.png
+gdrive/credentials.json
+gdrive/token.json
+SOTA models/BasicSR/
+SOTA models/DSCF-SR/
+SOTA models/HAT/
+SOTA models/Real-ESRGAN/
+SOTA models/seemoredetails/
+SOTA models/StableSR/
+SOTA models/SwinIR/
+
+# Result image dumps are too large for a normal GitHub repo; keep scripts/paper metadata instead.
+new results/
+old results of testing sota/
+metadata_full/
+metadata_final/
+*.png
+*.jpg
+*.jpeg
+
+new results/results/DSCF-SR/worst_samples/worst_07_psnr_10.05.png
+new results/results/DSCF-SR/worst_samples/worst_09_psnr_10.49.png
+new results/results/RealESRGAN_x4/worst_samples/worst_06_psnr_9.82.png
+new results/results/RealESRGAN_x4/worst_samples/worst_10_psnr_10.15.png
+new results/results/SeemoRe_B_X4/worst_samples/worst_06_psnr_10.05.png
+new results/results/SeemoRe_B_X4/worst_samples/worst_09_psnr_10.49.png
+new results/results/SeemoRe_T_X4/worst_samples/worst_06_psnr_10.05.png
+new results/results/SeemoRe_T_X4/worst_samples/worst_09_psnr_10.49.png
+old results of testing sota/results/DSCF-SR/worst_samples/worst_02_psnr_9.02.png
+old results of testing sota/results/DSCF-SR/worst_samples/worst_06_psnr_9.64.png
+gdrive/credentials.json
+gdrive/token.json
+SOTA models/BasicSR/
+SOTA models/DSCF-SR/
+SOTA models/HAT/
+SOTA models/Real-ESRGAN/
+SOTA models/seemoredetails/
+SOTA models/StableSR/
+SOTA models/SwinIR/

@@ -1,0 +1,15 @@
+% =================================================================================================
+% ABSTRACT
+% =================================================================================================
+\begin{abstract}
+\noindent
+Single Image Super-Resolution (SISR) has witnessed remarkable progress, yet the dominant evaluation paradigm relies on benchmarks with simple bicubic downsampling, failing to capture the complex degradations in real-world imaging.
+This mismatch leads to inflated metrics that poorly predict in-the-wild generalization.
+
+We present \dataset, a large-scale benchmark accompanied by \pipeline, a physically-grounded, multi-stage degradation pipeline modeling the image formation process from scene radiance to stored pixel values across six stages: optical aberrations, motion blur, scene illumination, sensor noise, ISP artifacts, and lossy compression.
+We construct \dataset by applying \pipeline to 2{,}000 high-quality images spanning four semantic categories, yielding paired LR--HR data with comprehensive per-image degradation metadata.
+
+Evaluation of four state-of-the-art methods reveals significant performance degradation: models achieving 30+ dB PSNR on Set5 attain only $\sim$23~dB on \dataset, exposing a 6--8~dB generalization gap.
+Furthermore, models designed for blind SR (\eg, Real-ESRGAN) exhibit superior perceptual quality despite lower distortion metrics, underscoring the need for multi-faceted evaluation.
+Our benchmark and code will be publicly released.
+\end{abstract}

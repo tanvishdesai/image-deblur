@@ -1,0 +1,46 @@
+% =================================================================================================
+% 2. RELATED WORK
+% =================================================================================================
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Single image super-resolution.}
+Deep SISR has evolved rapidly from SRCNN~\cite{dong2015image} through residual architectures (EDSR~\cite{lim2017enhanced}, RCAN~\cite{zhang2018image}) to Transformer-based methods.
+SwinIR~\cite{liang2021swinir} adapted shifted-window attention for efficient image restoration, and subsequent works---HAT~\cite{chen2023hat}, DSCF-SR~\cite{xiao2024dscf}, SeemoRe~\cite{zamfir2024seemore}---have further pushed quantitative benchmarks.
+In parallel, GAN-based approaches (SRGAN~\cite{ledig2017photo}, ESRGAN~\cite{wang2018esrgan}) demonstrated that perceptual and adversarial losses produce photo-realistic textures, establishing a fundamental tension between distortion and perceptual quality~\cite{blau2018perception}.
+Recent perceptual objectives include self-supervised DINO features~\cite{caron2021emerging} and frequency-domain losses~\cite{fuoli2021fourier}.
+
+\paragraph{Degradation modeling.}
+The classical degradation model $I_{LR} = (I_{HR} \otimes k) \downarrow_s + n$~\cite{dong2015image} is typically simplified to bicubic downsampling with $n{=}0$.
+Blind SR methods address more complex scenarios: IKC~\cite{gu2019blind} iteratively corrects kernels, BSRGAN~\cite{zhang2021designing} randomly shuffles blur-downsample-noise operations, and Real-ESRGAN~\cite{wang2021real} applies a second-order degradation pipeline with sinc filters.
+Despite advances in degradation-aware \textit{training}, the \textit{evaluation} paradigm has not kept pace---models are still predominantly assessed on bicubically degraded benchmarks.
+Our work draws on camera ISP modeling~\cite{zamir2020cycleisp} and sensor noise characterization~\cite{healey1994radiometric,foi2008practical} to construct a physically principled pipeline.
+
+\paragraph{SISR benchmark datasets.}
+The widely used benchmarks---Set5~\cite{bevilacqua2012low}, Set14~\cite{zeyde2010single}, BSD100~\cite{martin2001database}, Urban100~\cite{huang2015single}---all employ bicubic downsampling.
+Real-world alternatives like RealSR~\cite{cai2019toward} (595 pairs, single camera) and DRealSR~\cite{wei2020component} (840 pairs, five cameras) provide genuine degradations but are limited in scale and diversity, with potential alignment artifacts.
+Our \dataset occupies a distinct niche: unlike bicubic benchmarks, we model diverse, physically-grounded degradations; unlike real-captured datasets, our synthetic approach provides exact ground truth without alignment errors.
+Uniquely, \dataset includes per-image degradation metadata enabling fine-grained robustness analysis (\Cref{tab:dataset_comparison}).
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Comparison of SISR benchmark datasets.} \dataset uniquely combines large scale, diverse categories, complex degradations, and per-image metadata.}
+\label{tab:dataset_comparison}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Dataset} & \textbf{Size} & \textbf{Degrad.} & \textbf{Categories} & \textbf{Metadata} & \textbf{GT} \\
+\midrule
+Set5~\cite{bevilacqua2012low} & 5 & Bicubic & \xmark & \xmark & \cmark \\
+Set14~\cite{zeyde2010single} & 14 & Bicubic & \xmark & \xmark & \cmark \\
+BSD100~\cite{martin2001database} & 100 & Bicubic & \xmark & \xmark & \cmark \\
+Urban100~\cite{huang2015single} & 100 & Bicubic & 1 & \xmark & \cmark \\
+DIV2K~\cite{agustsson2017ntire} & 1{,}000 & Bicubic & \xmark & \xmark & \cmark \\
+RealSR~\cite{cai2019toward} & 595 & Real (1 cam.) & \xmark & \xmark & $\sim$ \\
+DRealSR~\cite{wei2020component} & 840 & Real (5 cam.) & \xmark & \xmark & $\sim$ \\
+\midrule
+\textbf{\dataset} & \textbf{2{,}000} & \textbf{Complex} & \textbf{4} & \textbf{\cmark} & \textbf{\cmark} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

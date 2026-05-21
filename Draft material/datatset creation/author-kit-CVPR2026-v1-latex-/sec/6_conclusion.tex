@@ -1,0 +1,12 @@
+% =================================================================================================
+% 6. CONCLUSION
+% =================================================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented \dataset, a benchmark for evaluating SISR under realistic, physically-grounded degradations, accompanied by \pipeline---a multi-stage degradation pipeline modeling the image formation process from optical aberrations to lossy compression.
+Our benchmarking of four SOTA methods reveals a 6--8~dB PSNR gap between standard bicubic benchmarks and \dataset, with non-blind methods converging to similar performance regardless of architecture, and a striking perception--distortion divergence for the blind method Real-ESRGAN.
+
+The per-image degradation metadata---unique to \dataset---opens several research directions: degradation-conditioned models that adapt to input-specific degradation profiles (\cf \cref{sec:exp_dast}), stratified robustness evaluation by degradation type and severity, and curriculum learning with calibrated difficulty levels.
+The modular design of \pipeline allows extension with new degradation types or adaptation to other restoration tasks.
+We will publicly release the complete dataset, pipeline code, and evaluation scripts to facilitate reproducible research.

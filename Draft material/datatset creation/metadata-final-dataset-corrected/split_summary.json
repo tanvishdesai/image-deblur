@@ -1,0 +1,72 @@
+{
+  "unique_hr_per_split": {
+    "train": 1330,
+    "val": 284,
+    "test": 286
+  },
+  "pair_count_per_split": {
+    "train": 5320,
+    "val": 1136,
+    "test": 1144
+  },
+  "category_hr_per_split": {
+    "train": {
+      "natural_landscapes": 350,
+      "objects_macro": 350,
+      "portraits_people": 315,
+      "urban_architecture": 315
+    },
+    "val": {
+      "natural_landscapes": 75,
+      "objects_macro": 75,
+      "portraits_people": 67,
+      "urban_architecture": 67
+    },
+    "test": {
+      "natural_landscapes": 75,
+      "objects_macro": 75,
+      "portraits_people": 68,
+      "urban_architecture": 68
+    }
+  },
+  "category_pairs_per_split": {
+    "train": {
+      "natural_landscapes": 1400,
+      "objects_macro": 1400,
+      "portraits_people": 1260,
+      "urban_architecture": 1260
+    },
+    "val": {
+      "natural_landscapes": 300,
+      "objects_macro": 300,
+      "portraits_people": 268,
+      "urban_architecture": 268
+    },
+    "test": {
+      "natural_landscapes": 300,
+      "objects_macro": 300,
+      "portraits_people": 272,
+      "urban_architecture": 272
+    }
+  },
+  "difficulty_per_split": {
+    "train": {
+      "medium": 1330,
+      "easy": 1330,
+      "extreme": 1330,
+      "hard": 1330
+    },
+    "val": {
+      "easy": 284,
+      "medium": 284,
+      "hard": 284,
+      "extreme": 284
+    },
+    "test": {
+      "hard": 286,
+      "extreme": 286,
+      "medium": 286,
+      "easy": 286
+    }
+  }
+}

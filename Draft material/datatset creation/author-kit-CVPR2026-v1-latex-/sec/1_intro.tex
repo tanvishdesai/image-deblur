@@ -1,0 +1,47 @@
+% =================================================================================================
+% 1. INTRODUCTION
+% =================================================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Single Image Super-Resolution (SISR) aims to reconstruct a high-resolution (HR) image $I_{HR} \in \mathbb{R}^{sH \times sW \times 3}$ from its low-resolution (LR) counterpart $I_{LR} \in \mathbb{R}^{H \times W \times 3}$, where $s$ denotes the upsampling scale factor.
+This ill-posed inverse problem has broad applicability in medical imaging~\cite{shi2013cardiac}, remote sensing~\cite{shermeyer2019effects}, surveillance~\cite{zhang2010super}, and consumer photography.
+The field has progressed from dictionary-based methods~\cite{yang2010image} through CNNs~\cite{dong2015image,lim2017enhanced} to Vision Transformers~\cite{liang2021swinir,chen2023hat} and GANs~\cite{wang2021real,wang2018esrgan}, with top models exceeding 32~dB PSNR on Set5~\cite{bevilacqua2012low} at $\times$4.
+
+However, the dominant benchmarking paradigm generates LR images through a single bicubic downsampling: $I_{LR} = I_{HR} \downarrow_{s}^{\text{bicubic}}$.
+This assumes an idealized pipeline where the sole information loss is spatial resolution reduction via a known kernel.
+In practice, real cameras introduce optical aberrations, sensor noise, motion blur, ISP artifacts, and lossy compression~\cite{liu2022blind,zhang2021designing}.
+Models trained under the bicubic assumption often fail catastrophically on these real-world degradations~\cite{wang2021real}, a phenomenon we term the \textit{degradation gap}.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig-1.png}
+    \caption{\textbf{Overview of the \pipeline degradation pipeline.}
+    Six sequential stages model the image formation process from scene to stored file:
+    (1)~optical aberrations,
+    (2)~motion blur (5 kernel types),
+    (3)~scene illumination effects,
+    (4)~sensor noise,
+    (5)~ISP processing, and
+    (6)~compression and downsampling.
+    Each stage is parameterized by physically meaningful quantities and applied stochastically, yielding diverse LR--HR pairs with complete degradation metadata.}
+    \label{fig:pipeline_overview}
+\end{figure*}
+
+In this paper, we address this gap through two contributions.
+First, we introduce \pipeline, a \textit{physically-grounded, multi-stage degradation pipeline} organizing ten distinct degradation operations into six ordered stages---optical, motion, scene, sensor, ISP, and compression---each parameterized by quantities with clear physical interpretations.
+Second, we present \dataset, a large-scale benchmark of 2{,}000 diverse image pairs across four semantic categories (\textit{urban architecture}, \textit{natural landscapes}, \textit{portraits}, \textit{macro objects}) with comprehensive per-image degradation metadata.
+
+Our evaluation of four SOTA methods reveals:
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=2pt]
+    \item \textbf{Substantial generalization gap:} models achieving ${>}$30~dB on Set5 attain only ${\sim}$23--24~dB on \dataset (6--8~dB drop).
+    \item \textbf{Perception--distortion divergence:} Real-ESRGAN obtains the best LPIPS (0.444 vs.\ ${>}$0.55 for non-blind methods) despite the lowest PSNR, showing that distortion metrics alone are insufficient under complex degradations.
+    \item \textbf{Content-dependent vulnerability:} urban architecture is most challenging due to geometric-degradation interactions; macro objects are comparatively resilient.
+\end{enumerate}
+
+\noindent Our contributions can be summarized as:
+\begin{itemize}[leftmargin=*,itemsep=1pt,topsep=2pt]
+    \item We propose \pipeline, a physically-grounded degradation pipeline comprising six ordered stages with ten degradation types, each governed by physically meaningful parameters.
+    \item We construct \dataset, a benchmark of 2{,}000 image pairs spanning four semantic categories with complete per-image degradation metadata.
+    \item We quantify the degradation gap: SOTA methods suffer a 6--8~dB PSNR drop from bicubic to realistic degradations, motivating future research in degradation-robust SR.
+\end{itemize}

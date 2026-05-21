@@ -1,9 +1,6 @@
-Draft material/datatset creation/SOTA models/Real-ESRGAN
-Draft material/datatset creation/SOTA models/seemoredetails
-Draft material/datatset creation/SOTA models
-Draft material/datatset creation/gdrive
 
-# Added during repository sync cleanup
+
+# Added by github_sync_projects.py
 node_modules/
 .next/
 dist/
@@ -19,8 +16,6 @@ venv/
 .venv/
 env/
 site-packages/
-.DS_Store
-Thumbs.db
 
 # Local secrets and credentials
 .env
@@ -33,16 +28,10 @@ token.json
 credentials/
 *.jks
 
-# Local databases and generated/runtime files
-*.sqlite
-*.sqlite3
-*.db
-*.log
-
-# Datasets, model weights, generated media, and archives
+# Datasets, model weights, and generated heavy artifacts
 dataset/
 datasets/
-data/raw/
+data/
 models/
 model/
 checkpoints/
